@@ -23,7 +23,12 @@ const UserHeader = () => {
     <VStack gap={4} alignItems={"start"}>
         <Flex justifyContent={"space-between"} w={"full"}>
             <Box>
-                <Text fontSize={"2xl"} fontWeight={"bold"}>
+                <Text fontSize={
+                    {base:'medium',
+                      md:'2xl'
+                    }
+                } 
+                fontWeight={"bold"}>
                     Mark Zuckerberg
                 </Text>
                 <Flex gap={2} alignItems={"center"}>
@@ -36,7 +41,12 @@ const UserHeader = () => {
                 <Avatar
                     name="Mark Zuckerberg"
                     src="/zuck-avatar.png"
-                    size={"xl"}
+                    size={
+                        {
+                            base:"md",
+                            md:"xl"
+                        }
+                    }
                 />
             </Box>
         </Flex>
@@ -58,7 +68,7 @@ const UserHeader = () => {
                         </MenuButton>
                         <Portal>
                             <MenuList bg={"gray.dark"}>
-                                <MenuItem bg={"gray.dark"} onClick={copyURL}>Copy Link</MenuItem>
+                                <MenuItem bg={"gray.dark"} color={"white"} onClick={copyURL}>Copy Link</MenuItem>
                             </MenuList>
 
                         </Portal>

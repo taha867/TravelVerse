@@ -25,18 +25,7 @@ const userSchema = mongoose.Schema({
         type:'string',
         default:"",
     },
-    followers:{
-        type:[String],
-        default:[],
-    },
-    following:{
-        type:[String],
-        default:[],
-    },
-    bio:{
-        type:'string',
-        default:"",
-    }
+   
 
 },{
     timestamps:true,

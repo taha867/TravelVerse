@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const postSchema = mongoose.Schema({
     postedBY:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "TravelCompany",
         required: true
     },
     text:{
@@ -20,7 +20,7 @@ const postSchema = mongoose.Schema({
     replies:{
         userId:{
             type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
+            ref: "User",  // Can reference both users and travel companies
             required: true
         },
         text:{
@@ -32,7 +32,11 @@ const postSchema = mongoose.Schema({
         },
         username:{
             type: String,
-        }
+        },
+        isAuthor: {
+            type: Boolean,
+            default: false, // Automatically determined when saving a comment
+        },
     }
 },{
     timestamps: true,

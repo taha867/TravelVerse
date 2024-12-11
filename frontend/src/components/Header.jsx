@@ -1,20 +1,19 @@
-import { Flex, Image, useColorMode } from "@chakra-ui/react"
-
+import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { IconButton, useColorMode } from "@chakra-ui/react";
 
 const Header = () => {
-    const { colorMode, toggleColorMode } = useColorMode()
+  const { colorMode, toggleColorMode } = useColorMode(); // Chakra's global color mode context
+  
   return (
-    <Flex justifyContent={"center"} mt={6} mb={12}>
-        <Image
-        cursor={"pointer"}
-        alt='logo'
-        w={6}
-        src={colorMode == "dark" ? "/light-logo.svg" : "/dark-logo.svg"}
-        onClick={toggleColorMode}
-        />
+    <IconButton
+      aria-label="Toggle Color Mode"
+      icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />} // Toggle between icons based on color mode
+      onClick={toggleColorMode} // Toggle the color mode on click
+      variant="link"
+      cursor="pointer"
+      size="lg"
+    />
+  );
+};
 
-    </Flex>
-  )
-}
-
-export default Header
+export default Header;

@@ -1,13 +1,18 @@
-import {createBrowserRouter} from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import userAtom from "../atoms/userAtom";
 import App from "../App";
 import UserPage from "../pages/UserPage";
 import PostPage from "../pages/PostPage";
+import AuthPage from "../pages/AuthPage";
 
-const router = createBrowserRouter([
+const Router = () => {
+  const user = useRecoilValue(userAtom); // Hook is now inside a functional component
+
+  const router = createBrowserRouter([
     {
       path: "/",
       element: <App />,
-
       children: [
         {
           path: "/:username",
@@ -17,8 +22,15 @@ const router = createBrowserRouter([
           path: "/:username/post/:pid",
           element: <PostPage />,
         },
+        {
+          path: "/auth",
+          element: !user ? <AuthPage /> : <Navigate to="/" />,
+        },
       ],
     },
   ]);
 
-  export default router;
+  return <RouterProvider router={router} />;
+};
+
+export default Router;

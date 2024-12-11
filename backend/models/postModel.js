@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const postSchema = mongoose.Schema({
-    postedBY:{
+    postedBy:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "TravelCompany",
         required: true
@@ -14,10 +14,13 @@ const postSchema = mongoose.Schema({
         type: String,
     },
     likes:{
-        type:Number,
-        default:0
+        //array of user id's
+        type:[mongoose.Schema.Types.ObjectId],
+        ref: "User",
+        default:[],
     },
-    replies:{
+    replies:[
+    {
         userId:{
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",  // Can reference both users and travel companies
@@ -38,6 +41,7 @@ const postSchema = mongoose.Schema({
             default: false, // Automatically determined when saving a comment
         },
     }
+]
 },{
     timestamps: true,
 })

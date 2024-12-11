@@ -10,7 +10,7 @@ const SignupTravelCompany = async (req, res) => {
         // Check if travel company already exists
         const existingCompany = await TravelCompany.findOne({ $or: [{ email }, { Companyname }] });
         if (existingCompany) {
-            return res.status(400).json({ message: "Travel company already exists" });
+            return res.status(400).json({ error: "Travel company already exists" });
         }
 
         // Save travel company as pending
@@ -28,9 +28,9 @@ const SignupTravelCompany = async (req, res) => {
             message: "Signup request submitted successfully. Await admin approval.",
         });
 
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-        console.log("Error in SignupTravelCompany: ", error.message);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+        console.log("Error in SignupTravelCompany: ", err.message);
     }
 };
 
@@ -43,7 +43,7 @@ const ApproveTravelCompany = async (req, res) => {
         const travelCompany = await TravelCompany.findById(companyId);
 
         if (!travelCompany) {
-            return res.status(404).json({ message: "Travel company not found" });
+            return res.status(404).json({ error: "Travel company not found" });
         }
         
 
@@ -68,9 +68,9 @@ const ApproveTravelCompany = async (req, res) => {
         });
 
         return res.status(200).json({ message: "Travel company approved and email sent successfully" });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-        console.log("Error in ApproveTravelCompany: ", error.message);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+        console.log("Error in ApproveTravelCompany: ", err.message);
     }
 };
 
@@ -83,7 +83,7 @@ const SetPassword = async (req, res) => {
         const travelCompany = await TravelCompany.findById(companyId);
 
         if (!travelCompany || travelCompany.status !== "approved") {
-            return res.status(400).json({ message: "Invalid or unapproved travel company" });
+            return res.status(400).json({ error: "Invalid or unapproved travel company" });
         }
 
         // Hash the password
@@ -101,9 +101,9 @@ const SetPassword = async (req, res) => {
             Companyname: travelCompany.Companyname,
             company: travelCompany.Company
         });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-        console.log("Error in SetPassword: ", error.message);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+        console.log("Error in SetPassword: ", err.message);
     }
 };
 
@@ -114,19 +114,19 @@ const LoginTravelCompany = async (req, res) => {
         const travelCompany = await TravelCompany.findOne({ email });
 
         if (!travelCompany) {
-            return res.status(404).json({ message: "Travel company not found" });
+            return res.status(404).json({ error: "Travel company not found" });
         }
 
         // Check if the account is active
         if (travelCompany.status !== "active") {
-            return res.status(400).json({ message: "Account is not active. Please complete the signup process." });
+            return res.status(400).json({ error: "Account is not active. Please complete the signup process." });
         }
 
         // Compare passwords
         const isMatch = await bcrypt.compare(password, travelCompany.password);
 
         if (!isMatch) {
-            return res.status(401).json({ message: "Invalid email or password" });
+            return res.status(401).json({ error: "Invalid email or password" });
         }
 
         // Generate token and set cookie
@@ -139,9 +139,9 @@ const LoginTravelCompany = async (req, res) => {
             Companyname: travelCompany.Companyname,
             company: travelCompany.company
         });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-        console.error("Error in LoginTravelCompany: ", error.message);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+        console.error("Error in LoginTravelCompany: ", err.message);
     }
 };
 
@@ -150,20 +150,20 @@ const sendemail = async (req, res) => {
 
     try {
         await sendEmail({ to, subject, text, html });
-        res.status(200).json({ message: "Email sent successfully!" });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-        console.error("Error sending email: ", error.message);
+        res.status(200).json({ error: "Email sent successfully!" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+        console.error("Error sending email: ", err.message);
     }
 }
 
 const Logout = async (req, res) => {
     try {
         res.cookie('jwt', '', { maxAge: 1 }); // Clear cookie
-        return res.status(200).json({ message: 'Travel Company logged out successfully!' });
-    } catch (error) {
-        console.error('Error in logoutUser:', error.message);
-        res.status(500).json({ message: error.message });
+        return res.status(200).json({ error: 'Travel Company logged out successfully!' });
+    } catch (err) {
+        console.error('Error in logoutUser:', err.message);
+        res.status(500).json({ error: err.message });
     }
 };
 const updateTravelcompany = async (req, res) => {
@@ -172,10 +172,10 @@ const updateTravelcompany = async (req, res) => {
     const userId = req.user._id;
     try {
         let user = await TravelCompany.findById(userId);
-        if (!user) return res.status(404).json({ message: 'Travel Company not found' });
+        if (!user) return res.status(404).json({ error: 'Travel Company not found' });
 
 
-        if(req.params.id !== userId.toString()) return res.status(404).json({ message: "You can not update other users profile"});
+        if(req.params.id !== userId.toString()) return res.status(404).json({ error: "You can not update other users profile"});
 
 
         if(password){
@@ -195,9 +195,9 @@ const updateTravelcompany = async (req, res) => {
 
         res.status(200).json({ message: "Profile updated successfully", user });
 
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-        console.log('Error in updateUser:', error.message);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+        console.log('Error in updateUser:', err.message);
     }
 } ;
 const getCompanyProfile = async (req, res) => {
@@ -209,15 +209,36 @@ const getCompanyProfile = async (req, res) => {
       const company = await TravelCompany.findOne({ Companyname }).select("-password -updatedAt");
 
       if (!company)
-        return res.status(404).json({ message: "Travel Company not found" });
+        return res.status(404).json({ error: "Travel Company not found" });
   
       res.status(200).json(company);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-      console.log("Error in getCompanyProfile:", error.message);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+      console.log("Error in getCompanyProfile:", err.message);
     }
   };
   
+  const getTravelCompaniesByStatus = async (req, res) => {
+    try {
+      const { status } = req.query; // Extract the status query parameter
+  
+      if (!status) {
+        return res.status(400).json({ error: "Status query parameter is required." });
+      }
+  
+      // Fetch travel companies with the given status
+      const companies = await TravelCompany.find({ status });
+  
+      if (!companies.length) {
+        return res.status(404).json({ error: "No travel companies found with the specified status." });
+      }
+  
+      res.status(200).json(companies); // Send the list of companies as a response
+    } catch (error) {
+      console.error("Error fetching travel companies:", error);
+      res.status(500).json({ error: "Internal server error." });
+    }
+  };
 
 
-export { SignupTravelCompany, ApproveTravelCompany, SetPassword, LoginTravelCompany, sendemail, Logout,updateTravelcompany,getCompanyProfile };
+export { SignupTravelCompany, ApproveTravelCompany, SetPassword, LoginTravelCompany, sendemail, Logout,updateTravelcompany,getCompanyProfile, getTravelCompaniesByStatus };

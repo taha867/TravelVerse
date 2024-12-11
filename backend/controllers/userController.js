@@ -6,10 +6,16 @@ const SignupUser = async (req, res) => {
     try {
         const { name, email, username, password } = req.body;
 
+
+        // Check if all fields are filled
+      if (!name || !email || !username || !password) {
+        return res.status(400).json({ error: "Please fill in all fields." });
+      }
+
         // Check if user already exists
         const user = await User.findOne({ $or: [{ email }, { username }] });
         if (user) {
-            return res.status(400).json({ message: "User already exists" });
+            return res.status(400).json({ error: "User already exists" });
         }
 
         // Hash the password
@@ -39,9 +45,9 @@ const SignupUser = async (req, res) => {
             return res.status(400).json({ message: "Invalid user data" });
         }
 
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-        console.log("Error in SignupUser: ", error.message);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+        console.log("Error in SignupUser: ", err.message);
     }
 };
 
@@ -52,7 +58,7 @@ const loginUser = async (req, res) => {
         const isPasswordCorrect = await bcrypt.compare(password, user?.password || "") ;//if username doesnot exist it will compare with " "
 
         if(!user || !isPasswordCorrect)
-            return res.status(400).json({message: "Invalid Username or Password"});
+            return res.status(400).json({error: "Invalid Username or Password"});
 
         genrateTokenAndSetCookie(user._id,res);
 
@@ -65,9 +71,9 @@ const loginUser = async (req, res) => {
         })
 
 
-    } catch (error) {
-        res.status(500  ).json({message: error.message});
-        console.log("Error in loginUser: ",error.message);
+    } catch (err) {
+        res.status(500  ).json({error: err.message});
+        console.log("Error in loginUser: ",err.message);
     }
 };
 
@@ -75,9 +81,9 @@ const LogoutUser = async (req, res) => {
     try {
         res.cookie('jwt', '', { maxAge: 1 }); // Clear cookie
         return res.status(200).json({ message: 'User logged out successfully!' });
-    } catch (error) {
-        console.error('Error in logoutUser:', error.message);
-        res.status(500).json({ message: error.message });
+    } catch (err) {
+        console.error('Error in logoutUser:', err.message);
+        res.status(500).json({ error: err.message });
     }
 };
 
@@ -87,9 +93,9 @@ const updateUser = async (req, res) => {
     const userId = req.user._id;
     try {
         let user = await User.findById(userId);
-        if (!user) return res.status(404).json({ message: 'User not found' });
+        if (!user) return res.status(404).json({ error: 'User not found' });
 
-        if(req.params.id !== userId.toString()) return res.status(404).json({ message: "You can not update other users profile"});
+        if(req.params.id !== userId.toString()) return res.status(404).json({error: "You can not update other users profile"});
 
 
         if(password){
@@ -107,22 +113,22 @@ const updateUser = async (req, res) => {
 
         res.status(200).json({ message: "Profile updated successfully", user });
 
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-        console.log('Error in updateUser:', error.message);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+        console.log('Error in updateUser:', err.message);
     }
 } ;
 const getUserProfile = async (req, res) => {
     const { username } = req.params;
-    console.log(`Received request for user: ${username}`); // Debugging line
+
     try {
         const user = await User.findOne({ username }).select("-password -updatedAt");
-        if (!user) return res.status(404).json({ message: "User not found" });
+        if (!user) return res.status(404).json({ error: "User not found" });
 
         res.status(200).json(user);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-        console.log('Error in getUserProfile:', error.message);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+        console.log('Error in getUserProfile:', err.message);
     }
 };
 

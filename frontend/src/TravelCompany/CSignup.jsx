@@ -17,9 +17,9 @@ import {
   import theme from "../components/theme";
   import { useState } from "react";
   import useShowToast from "../hooks/useShowToast";
-import { useSetRecoilState } from "recoil";
-import authScreenAtom from "../CAtom/CauthAtom";  
-
+  import { useSetRecoilState } from "recoil";
+  import authScreenAtom from "../CAtom/CauthAtom";
+  
   export default function TravelCompanySignupForm() {
     const [loading, setLoading] = useState(false);
     const [inputs, setInputs] = useState({
@@ -30,6 +30,7 @@ import authScreenAtom from "../CAtom/CauthAtom";
     });
     const setAuthScreen = useSetRecoilState(authScreenAtom);
     const showToast = useShowToast();
+   
   
     const handleSignup = async () => {
       setLoading(true);
@@ -47,6 +48,17 @@ import authScreenAtom from "../CAtom/CauthAtom";
           return;
         }
         showToast("Success", "Signup request submitted! Await admin approval.", "success");
+  
+        // Clear inputs
+        setInputs({
+          company: "",
+          Companyname: "",
+          email: "",
+          instagramUrl: "",
+        });
+  
+        // Navigate to the home page
+        
       } catch (error) {
         showToast("Error", error.message, "error");
       } finally {

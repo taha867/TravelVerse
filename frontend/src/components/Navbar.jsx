@@ -27,9 +27,12 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { useRecoilValue } from "recoil";
+import AdminAtom from "../AAtom/AuserAtom";
 import userAtom from "../Uatoms/userAtom"; // Recoil state for user
 import CompanyAtom from "../CAtom/CuserAtom"; // Recoil state for company
-import LogoutButton from "../Users/ULogOutButton"; // Logout component
+import ULogoutButton from "../Users/ULogOutButton"; // Logout component
+import CLogOutButton from "../TravelCompany/CLogOutButton";
+import AdminLogOutButton from "../Admin/ALogoutBoutton";
 import Header from "./Header"; // Light/Dark mode toggle component
 
 function Navbar() {
@@ -37,9 +40,9 @@ function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const user = useRecoilValue(userAtom); // Current user state from Recoil
   const TCompany = useRecoilValue(CompanyAtom); // Current company state from Recoil
+  const admin = useRecoilValue(AdminAtom);
   const navigate = useNavigate();
 
-  // Sticky navbar on scroll
   useEffect(() => {
     const handleScroll = () => {
       setIsSticky(window.scrollY > 100);
@@ -53,11 +56,29 @@ function Navbar() {
   const bgColor = useColorModeValue("white", "gray.800");
   const textColor = useColorModeValue("black", "white");
 
-  // Navigate to appropriate registration/login pages
   const handleNavigate = (type, role) => {
     if (type === "register") {
-      navigate(role === "user" ? "/Uauth" : "/Cauth");
+      navigate(
+        role === "user"
+          ? "/Uauth"
+          : role === "company"
+          ? "/Cauth"
+          : role === "admin"
+          ? "/Aauth"
+          : null
+      );
     }
+  };
+
+  // Get avatar URL dynamically
+  const getAvatarUrl = () => {
+    if (user) {
+      return user.profilePic || "https://via.placeholder.com/150"; // Default placeholder for user
+    }
+    if (TCompany) {
+      return TCompany.profilePic || "https://via.placeholder.com/150"; // Default placeholder for company
+    }
+    return "https://via.placeholder.com/150"; // Default avatar for non-logged-in state
   };
 
   return (
@@ -81,7 +102,6 @@ function Navbar() {
         color={textColor}
         backdropFilter="blur(10px)"
       >
-        {/* Logo */}
         <Flex align="center" mr={5}>
           <Link as={RouterLink} to="/" _hover={{ textDecoration: "none" }}>
             <Flex align="center">
@@ -97,33 +117,33 @@ function Navbar() {
           </Link>
         </Flex>
 
-        {/* Right-side controls */}
         <Flex alignItems="center" ml={4}>
           <Stack direction="row" spacing={7}>
-            <Header /> {/* Light/Dark mode toggle */}
-
-            {!user && !TCompany ? (
-              <>
-                {/* Register Button */}
-                <Menu>
-                  <MenuButton as={Button} colorScheme="blue">
-                    Register
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem onClick={() => handleNavigate("register", "user")}>
-                      Register as User
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleNavigate("register", "company")}
-                    >
-                      Register as Travel Company
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
-
-              </>
+            <Link as={RouterLink} to="/browse" color="blue.500" fontWeight="medium">
+              Browse
+            </Link>
+            <Link as={RouterLink} to="/contact" color="blue.500" fontWeight="medium">
+              Contact
+            </Link>
+            <Header />
+            {!user && !TCompany && !admin ? (
+              <Menu>
+                <MenuButton as={Button} colorScheme="blue">
+                  Register
+                </MenuButton>
+                <MenuList>
+                  <MenuItem onClick={() => handleNavigate("register", "user")}>
+                    Register as User
+                  </MenuItem>
+                  <MenuItem onClick={() => handleNavigate("register", "company")}>
+                    Register as Travel Company
+                  </MenuItem>
+                  <MenuItem onClick={() => handleNavigate("register", "admin")}>
+                    Register as Admin
+                  </MenuItem>
+                </MenuList>
+              </Menu>
             ) : (
-              // Profile Avatar (When logged in)
               <Menu>
                 <MenuButton
                   as={Button}
@@ -132,25 +152,21 @@ function Navbar() {
                   cursor="pointer"
                   minW={0}
                 >
-                  <Avatar
-                    size="sm"
-                    src="https://avatars.dicebear.com/api/male/username.svg"
-                  />
+                  <Avatar size="sm" src={getAvatarUrl()} />
                 </MenuButton>
                 <MenuList alignItems="center">
                   <br />
                   <Center>
-                    <Avatar
-                      size="2xl"
-                      src="https://avatars.dicebear.com/api/male/username.svg"
-                    />
+                    <Avatar size="2xl" src={getAvatarUrl()} />
                   </Center>
                   <br />
                   <Center>
                     <Text>
                       {user
                         ? `Welcome, ${user.username}`
-                        : `Welcome, ${TCompany.companyName}`}
+                        : TCompany
+                        ? `Welcome, ${TCompany.companyName}`
+                        : `Welcome, Admin`}
                     </Text>
                   </Center>
                   <br />
@@ -159,15 +175,19 @@ function Navbar() {
                     Dashboard
                   </MenuItem>
                   <MenuItem>
-                    <LogoutButton />
+                    {user ? (
+                      <ULogoutButton />
+                    ) : TCompany ? (
+                      <CLogOutButton />
+                    ) : admin ? (
+                      <AdminLogOutButton />
+                    ) : null}
                   </MenuItem>
                 </MenuList>
               </Menu>
             )}
           </Stack>
         </Flex>
-
-        {/* Hamburger menu */}
         <Box display={{ base: "block", md: "none" }}>
           <IconButton
             onClick={onOpen}
@@ -177,8 +197,6 @@ function Navbar() {
           />
         </Box>
       </Flex>
-
-      {/* Drawer for small screens */}
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
@@ -189,23 +207,22 @@ function Navbar() {
               <Link as={RouterLink} to="/" fontWeight="medium" color={textColor}>
                 Home
               </Link>
-              {!user && !TCompany ? (
+              <Link as={RouterLink} to="/browse" fontWeight="medium" color={textColor}>
+                Browse
+              </Link>
+              <Link as={RouterLink} to="/contact" fontWeight="medium" color={textColor}>
+                Contact
+              </Link>
+              {!user && !TCompany && !admin ? (
                 <>
                   <MenuItem onClick={() => handleNavigate("register", "user")}>
                     Register as User
                   </MenuItem>
-                  <MenuItem
-                    onClick={() => handleNavigate("register", "company")}
-                  >
+                  <MenuItem onClick={() => handleNavigate("register", "company")}>
                     Register as Travel Company
                   </MenuItem>
-                  <MenuItem onClick={() => handleNavigate("login", "user")}>
-                    Login as User
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => handleNavigate("login", "company")}
-                  >
-                    Login as Travel Company
+                  <MenuItem onClick={() => handleNavigate("register", "admin")}>
+                    Register as Admin
                   </MenuItem>
                 </>
               ) : (
@@ -214,7 +231,13 @@ function Navbar() {
                     Dashboard
                   </MenuItem>
                   <MenuItem>
-                    <LogoutButton />
+                    {user ? (
+                      <ULogoutButton />
+                    ) : TCompany ? (
+                      <CLogOutButton />
+                    ) : admin ? (
+                      <AdminLogOutButton />
+                    ) : null}
                   </MenuItem>
                 </>
               )}

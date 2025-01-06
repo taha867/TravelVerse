@@ -1,68 +1,68 @@
 import {
-  Box,
-  Button,
-  ChakraProvider,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Input,
-  Stack,
-  Text,
-  useColorModeValue,
-  Link,
-  Icon,
-  InputGroup,
-  InputRightElement,
-} from "@chakra-ui/react";
-import { FaPlane } from "react-icons/fa";
-import theme from "../components/theme";
-import { useState } from "react";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { useSetRecoilState } from "recoil";
-import authScreenAtom from "../Uatoms/authAtom";
-import useShowToast from "../hooks/useShowToast";
-import userAtom from "../Uatoms/userAtom";
-import { useNavigate } from "react-router-dom";
+    Box,
+    Button,
+    ChakraProvider,
+    Flex,
+    FormControl,
+    FormLabel,
+    Heading,
+    Input,
+    Stack,
+    useColorModeValue,
+    Icon,
+    InputGroup,
+    InputRightElement,
+  } from "@chakra-ui/react";
+  import { FaPlane } from "react-icons/fa";
+  import theme from "../components/theme";
+  import { useState } from "react";
+  import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+  import { useSetRecoilState } from "recoil";
+  import useShowToast from "../hooks/useShowToast";
+  import AdminAtom from "../AAtom/AuserAtom";
+  import { useNavigate } from "react-router-dom";
 
-export default function LoginForm() {
-  const [showPassword, setShowPassword] = useState(false);
-  const setAuthScreen = useSetRecoilState(authScreenAtom);
-  const setUser = useSetRecoilState(userAtom);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+const AdminLogin = () => {
+    const [showPassword, setShowPassword] = useState(false);
+    const setadmin = useSetRecoilState(AdminAtom);
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
 
-  const [inputs, setInputs] = useState({
-    username: "",
-    password: "",
-  });
-  const showToast = useShowToast();
-  const handleLogin = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(inputs),
+    const [inputs, setInputs] = useState({
+        username: "",
+        password: "",
       });
-      const data = await res.json();
-      if (data.error) {
-        showToast("Error", data.error, "error");
-        return;
-      }
-      // Authenticate the user only after successful login
-      localStorage.setItem("user-threads", JSON.stringify(data));
-      setUser(data); // Update authenticated user state
-      navigate("/"); // Redirect to home page
-    } catch (error) {
-      showToast("Error", error.message, "error");
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      const showToast = useShowToast();
+      const handleLogin = async () => {
+        setLoading(true);
+        try {
+          const res = await fetch("/api/admin/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(inputs),
+          });
+          const data = await res.json();
+          if (data.error) {
+            showToast("Error", data.error, "error");
+            return;
+          }
+          // Authenticate the user only after successful login
+          localStorage.setItem("admin-data", JSON.stringify(data));
+          setadmin(data); // Update authenticated user state
+          navigate("/"); // Redirect to home page
+        } catch (error) {
+          showToast("Error", error.message, "error");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+    
+
 
   return (
     <ChakraProvider theme={theme}>
@@ -90,7 +90,7 @@ export default function LoginForm() {
         >
           <Icon as={FaPlane} w={10} h={10} color="brand.500" mb={4} />
           <Heading mb={6} color="#004280">
-            Welcome Back!
+            Welcome Back Admin!
           </Heading>
           <Stack spacing={4} width="100%">
             <FormControl isRequired>
@@ -145,14 +145,10 @@ export default function LoginForm() {
               Sign in
             </Button>
           </Stack>
-          <Text mt={6}>
-            Don&apos;t have an account?{" "}
-            <Link color={"blue.400"} onClick={() => setAuthScreen("signup")}>
-              Sign up
-            </Link>
-          </Text>
         </Flex>
       </Box>
     </ChakraProvider>
-  );
-}
+  )
+};
+
+export default AdminLogin;

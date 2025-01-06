@@ -15,7 +15,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import theme from "../components/theme";
 
 const SetPasswordPage = () => {
-  const { token } = useParams(); // Get the token from the URL
+  const { companyId } = useParams(); // Get companyId from URL parameters
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,31 +33,30 @@ const SetPasswordPage = () => {
       });
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
-      const res = await fetch(`/api/travelcompanies/setpassword`, {
+      const response = await fetch(`/api/travelcompany/set-password/${companyId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ token, password }),
+        body: JSON.stringify({ password }),
       });
-
-      const data = await res.json();
-
-      if (data.error) {
+  
+      const data = await response.json();
+      if (response.status !== 200) {
         toast({
           title: "Error",
-          description: data.error,
+          description: data.error || "Failed to set password.",
           status: "error",
           duration: 5000,
           isClosable: true,
         });
         return;
       }
-
+  
       toast({
         title: "Success",
         description: "Password set successfully. You can now log in.",
@@ -65,12 +64,13 @@ const SetPasswordPage = () => {
         duration: 5000,
         isClosable: true,
       });
-
-      navigate("/login"); // Redirect to the login page
-    } catch (err) {
+  
+      navigate("/login");
+    } catch (error) {
+      console.error("Error:", error);
       toast({
         title: "Error",
-        description: "Failed to set password.",
+        description: "An unexpected error occurred.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -79,7 +79,8 @@ const SetPasswordPage = () => {
       setLoading(false);
     }
   };
-
+  
+  
   return (
     <ChakraProvider theme={theme}>
       <Flex

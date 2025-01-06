@@ -1,8 +1,13 @@
 import { atom } from "recoil";
 
-const travelCompanyAtom = atom({
+const CuserAtom = atom({
   key: "travelCompanyAtom",
-  default: JSON.parse(localStorage.getItem("travel-company-data")) || null, // Retrieve stored travel company data or null
+  default: (() => {
+    const storedData = JSON.parse(localStorage.getItem("travel-company-data"));
+    return storedData?.user || null; // Return the nested `user` object or null
+  })(),
 });
 
-export default travelCompanyAtom;
+
+
+export default CuserAtom;

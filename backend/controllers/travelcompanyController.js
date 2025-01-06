@@ -2,6 +2,7 @@ import TravelCompany from "../models/travelcompanyModel.js";
 import bcrypt from "bcryptjs";
 import genrateTokenAndSetCookie from "../utils/helpers/genrateTokenAndSetCookie.js";
 import sendEmail from "../utils/helpers/emailHelper.js";
+import { v2 as cloudinary } from "cloudinary";
 
 const SignupTravelCompany = async (req, res) => {
     try {
@@ -24,9 +25,18 @@ const SignupTravelCompany = async (req, res) => {
 
         await newTravelCompany.save();
 
-        return res.status(201).json({
-            message: "Signup request submitted successfully. Await admin approval.",
-        });
+        if (newTravelCompany) {
+            genrateTokenAndSetCookie(newTravelCompany._id, res);
+            return res.status(201).json({
+                _id: newTravelCompany._id,
+                company: newTravelCompany.company,
+                email: newTravelCompany.email,
+                Companyname: newTravelCompany.Companyname,
+                profilePic: newTravelCompany.profilePic
+            });
+        } else {
+            return res.status(400).json({ message: "Invalid Company data" });
+        }
 
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -46,19 +56,18 @@ const ApproveTravelCompany = async (req, res) => {
             return res.status(404).json({ error: "Travel company not found" });
         }
         
-
         // Mark as approved
         travelCompany.status = "approved";
         await travelCompany.save();
 
         // Generate a password setup link
-        const passwordSetupLink = `${process.env.APP_URL}/set-password?companyId=${travelCompany._id}`;
+        const passwordSetupLink = `${process.env.APP_URL}/setpassword/${travelCompany._id}`;
 
         // Send email with the link
         await sendEmail({
             to: travelCompany.email,
             subject: "Password Setup for Travel Verse",
-            text: `Hello ${travelCompany.Company},\n\nYour account has been approved. Please set your password using the following link:\n${passwordSetupLink}\n\nThank you!`,
+            text: `Hello ${travelCompany.Companyname},\n\nYour account has been approved. Please set your password using the following link:\n${passwordSetupLink}\n\nThank you!`,
             html: `
                 <p>Hello ${travelCompany.Companyname},</p>
                 <p>Your account has been approved. Please set your password using the link below:</p>
@@ -76,37 +85,53 @@ const ApproveTravelCompany = async (req, res) => {
 
 
 
+
 const SetPassword = async (req, res) => {
     try {
-        const { companyId, password } = req.body;
-
-        const travelCompany = await TravelCompany.findById(companyId);
-
-        if (!travelCompany || travelCompany.status !== "approved") {
-            return res.status(400).json({ error: "Invalid or unapproved travel company" });
-        }
-
-        // Hash the password
-        const salt = await bcrypt.genSalt(10);
-        travelCompany.password = await bcrypt.hash(password, salt);
-        travelCompany.status = "active"; // Mark as active
-        await travelCompany.save();
-
-        genrateTokenAndSetCookie(travelCompany._id, res);
-
-        return res.status(200).json({
-            message: "Password set successfully",
-            _id: travelCompany._id,
-            email: travelCompany.email,
-            Companyname: travelCompany.Companyname,
-            company: travelCompany.Company
-        });
+      // Extract companyId from URL parameters and password from the body
+      const { companyId } = req.params;
+      const { password } = req.body;
+  
+      console.log(`Setting password for company ID: ${companyId}`);
+  
+      // Find the travel company in the database
+      const travelCompany = await TravelCompany.findById(companyId);
+  
+      // Validate if the company exists and has been approved
+      if (!travelCompany || travelCompany.status !== "approved") {
+        return res.status(400).json({ error: "Invalid or unapproved travel company" });
+      }
+  
+      // Hash the password
+      const salt = await bcrypt.genSalt(10);
+      travelCompany.password = await bcrypt.hash(password, salt);
+  
+      // Set the company status to "active" after the password is set
+      travelCompany.status = "active"; // Ensure the company is marked as active
+  
+      // Save the updated travel company document
+      await travelCompany.save();
+  
+      // Optionally generate a token (if your application requires it) and set it as a cookie
+      genrateTokenAndSetCookie(travelCompany._id, res);
+  
+      // Respond with the success message and company details
+      return res.status(200).json({
+        message: "Password set successfully",
+        _id: travelCompany._id,
+        email: travelCompany.email,
+        Companyname: travelCompany.Companyname,
+        company: travelCompany.company
+      });
+  
     } catch (err) {
-        res.status(500).json({ error: err.message });
-        console.log("Error in SetPassword: ", err.message);
+      // In case of error, send a 500 response with the error message
+      res.status(500).json({ error: err.message });
+      console.log("Error in SetPassword: ", err.message);
     }
-};
-
+  };
+  
+  
 const LoginTravelCompany = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -137,7 +162,8 @@ const LoginTravelCompany = async (req, res) => {
             _id: travelCompany._id,
             email: travelCompany.email,
             Companyname: travelCompany.Companyname,
-            company: travelCompany.company
+            company: travelCompany.company,
+            profilePic: travelCompany.profilePic
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -160,7 +186,7 @@ const sendemail = async (req, res) => {
 const Logout = async (req, res) => {
     try {
         res.cookie('jwt', '', { maxAge: 1 }); // Clear cookie
-        return res.status(200).json({ error: 'Travel Company logged out successfully!' });
+        return res.status(200).json({ message: 'Travel Company logged out successfully!' });
     } catch (err) {
         console.error('Error in logoutUser:', err.message);
         res.status(500).json({ error: err.message });
@@ -168,13 +194,14 @@ const Logout = async (req, res) => {
 };
 const updateTravelcompany = async (req, res) => {
 
-    const {company,Companyname,email, instagramUrl, password,status, profilepic} = req.body;
+    const {company,email, instagramUrl, password,status} = req.body;
+    let {profilePic} = req.body;
     const userId = req.user._id;
     try {
         let user = await TravelCompany.findById(userId);
         if (!user) return res.status(404).json({ error: 'Travel Company not found' });
 
-
+        
         if(req.params.id !== userId.toString()) return res.status(404).json({ error: "You can not update other users profile"});
 
 
@@ -184,11 +211,20 @@ const updateTravelcompany = async (req, res) => {
             user.password = hashedPassword;
         }
 
+
+        if (profilePic) {
+			if (user.profilePic) {
+				await cloudinary.uploader.destroy(user.profilePic.split("/").pop().split(".")[0]);
+			}
+
+			const uploadedResponse = await cloudinary.uploader.upload(profilePic);
+			profilePic = uploadedResponse.secure_url;
+		}
+
         user.company= company || user.company;
-        user.Companyname= Companyname || user.Companyname;
         user.email= email || user.email;
         user.instagramUrl= instagramUrl || user.instagramUrl;
-        user.profilePic= profilepic || user.profilePic;
+        user.profilePic= profilePic || user.profilePic;
         user.status= status || user.status;
 
         user = await user.save();

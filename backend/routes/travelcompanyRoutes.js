@@ -6,11 +6,11 @@ const router = express.Router();
 
 router.post("/signup", SignupTravelCompany); // Initial signup
 router.patch("/approve/:companyId", ApproveTravelCompany); // Admin approval
-router.post("/set-password", SetPassword); // Password setup
+router.post("/set-password/:companyId", SetPassword); // Password setup
 router.post("/send-email", sendemail)
 router.post("/login", LoginTravelCompany);
 router.post("/logout", Logout);
-router.post("/update/:id",protectRoute, updateTravelcompany);
+router.put("/update/:id",protectRoute, updateTravelcompany);
 router.get("/profile/:Companyname", getCompanyProfile);
 router.get("/",getTravelCompaniesByStatus);
 export default router;

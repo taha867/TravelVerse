@@ -11,23 +11,30 @@ import {
     useColorModeValue,
     Icon,
     Text,
+    InputGroup,
+    InputRightElement,
   } from "@chakra-ui/react";
   import { FaBuilding } from "react-icons/fa";
   import theme from "../components/theme";
+  import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
   import { useState } from "react";
   import useShowToast from "../hooks/useShowToast";
 import { Link } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import authScreenAtom from "../CAtom/CauthAtom";  
+import authScreenAtom from "../CAtom/CauthAtom"; 
+import { useNavigate } from "react-router-dom"; 
+import CompanyAtom from "../CAtom/CuserAtom"
 
   export default function TravelCompanyLoginForm() {
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [inputs, setInputs] = useState({
       email: "",
       password: "",
     });
     const setAuthScreen = useSetRecoilState(authScreenAtom);
-  
+    const setCompany = useSetRecoilState(CompanyAtom);
+    const navigate = useNavigate();
     const showToast = useShowToast();
   
     const handleLogin = async () => {
@@ -45,6 +52,9 @@ import authScreenAtom from "../CAtom/CauthAtom";
           showToast("Error", data.error, "error");
           return;
         }
+        localStorage.setItem("travel-company-data", JSON.stringify(data));
+        setCompany(data); // Update authenticated user state
+        navigate("/"); // Redirect to home page
         showToast("Success", "Login successful!", "success");
         // Redirect or handle success
       } catch (error) {
@@ -93,13 +103,25 @@ import authScreenAtom from "../CAtom/CauthAtom";
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Password</FormLabel>
+                <InputGroup>
                 <Input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={inputs.password}
                   onChange={(e) =>
                     setInputs((inputs) => ({ ...inputs, password: e.target.value }))
                   }
                 />
+                <InputRightElement h={"full"}>
+                  <Button
+                    variant={"ghost"}
+                    onClick={() =>
+                      setShowPassword((showPassword) => !showPassword)
+                    }
+                  >
+                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  </Button>
+                </InputRightElement>
+                </InputGroup>
               </FormControl>
               <Button
                 size="lg"

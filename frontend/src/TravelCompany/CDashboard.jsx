@@ -1,9 +1,15 @@
+import { Flex } from "@chakra-ui/react";
+import Sidebar from "./CDashboardComponents/Sidebar";
+import MainContent from "./CDashboardComponents/MainContent";
 
-
-const CDashboard = () => {
+export default function CDashboard() {
   return (
-    <div>CDashboard</div>
-  )
+    <Flex
+      direction={{ base: "column", md: "row" }} // Stack on smaller screens
+      pt="80px"
+    >
+      <Sidebar />
+      <MainContent />
+    </Flex>
+  );
 }
-
-export default CDashboard

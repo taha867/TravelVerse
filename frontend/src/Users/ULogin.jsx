@@ -31,7 +31,11 @@ export default function LoginForm() {
   const setUser = useSetRecoilState(userAtom);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const bg = useColorModeValue("white", "gray.800");
+  const boxShadow = useColorModeValue("xl", "dark-lg");
+  const btnBg = useColorModeValue("gray.600", "gray.700");
+  const btnHover = useColorModeValue("gray.700", "gray.800");
+  const headingColor = useColorModeValue("#004280", "blue.300");
 
   const [inputs, setInputs] = useState({
     username: "",
@@ -53,10 +57,9 @@ export default function LoginForm() {
         showToast("Error", data.error, "error");
         return;
       }
-      // Authenticate the user only after successful login
       localStorage.setItem("user-threads", JSON.stringify(data));
-      setUser(data); // Update authenticated user state
-      navigate("/"); // Redirect to home page
+      setUser(data);
+      navigate("/");
     } catch (error) {
       showToast("Error", error.message, "error");
     } finally {
@@ -81,15 +84,15 @@ export default function LoginForm() {
           alignItems="center"
           justifyContent="center"
           backdropFilter="blur(10px)"
-          backgroundColor={useColorModeValue("white", "gray.dark")}
+          backgroundColor={bg}
           borderRadius="xl"
-          boxShadow="xl"
+          boxShadow={boxShadow}
           p={8}
           maxWidth="400px"
           width="90%"
         >
           <Icon as={FaPlane} w={10} h={10} color="brand.500" mb={4} />
-          <Heading mb={6} color="#004280">
+          <Heading mb={6} color={headingColor}>
             Welcome Back!
           </Heading>
           <Stack spacing={4} width="100%">
@@ -134,10 +137,10 @@ export default function LoginForm() {
             <Button
               loadingText="Logging in"
               size="lg"
-              bg={useColorModeValue("gray.600", "gray.700")}
+              bg={btnBg}
               color={"white"}
               _hover={{
-                bg: useColorModeValue("gray.700", "gray.800"),
+                bg: btnHover,
               }}
               onClick={handleLogin}
               isLoading={loading}

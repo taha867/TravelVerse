@@ -1,4 +1,4 @@
-import { Box, Container, Heading, SimpleGrid, Image, Text, Badge } from '@chakra-ui/react';
+import { Box, Container, Heading, SimpleGrid, Image, Text, Badge, useColorModeValue } from '@chakra-ui/react';
 
 const destinations = [
   {
@@ -22,14 +22,17 @@ const destinations = [
 ];
 
 export default function PopularDestinations() {
+  // Define color values for light and dark modes using useColorModeValue
+  const bgColor = useColorModeValue('gray.50', 'gray.800');
+  const cardBgColor = useColorModeValue('white', 'gray.700');
+  const shadow = useColorModeValue('lg', 'dark-lg');
+  const textColor = useColorModeValue('gray.900', 'white');
+  const badgeColor = useColorModeValue('teal', 'teal.300');
+
   return (
-    <Box py={20} bg="gray.50">
+    <Box py={20} bg={bgColor}>
       <Container maxW="7xl">
-        <Heading
-          textAlign="center"
-          mb={12}
-          fontSize={{ base: '3xl', md: '4xl' }}
-        >
+        <Heading textAlign="center" mb={12} fontSize={{ base: '3xl', md: '4xl' }}>
           Popular Destinations
         </Heading>
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
@@ -38,8 +41,8 @@ export default function PopularDestinations() {
               key={index}
               borderRadius="xl"
               overflow="hidden"
-              bg="white"
-              shadow="lg"
+              bg={cardBgColor}
+              shadow={shadow}
               _hover={{ transform: 'translateY(-4px)', shadow: 'xl' }}
               transition="all 0.2s"
               cursor="pointer"
@@ -56,7 +59,7 @@ export default function PopularDestinations() {
                   position="absolute"
                   top={4}
                   right={4}
-                  colorScheme="teal"
+                  colorScheme={badgeColor}
                   borderRadius="full"
                   px={3}
                   py={1}
@@ -65,7 +68,7 @@ export default function PopularDestinations() {
                 </Badge>
               </Box>
               <Box p={6}>
-                <Heading size="md" mb={2}>
+                <Heading size="md" mb={2} color={textColor}>
                   {destination.title}
                 </Heading>
                 <Text color="teal.500" fontWeight="bold">

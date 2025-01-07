@@ -36,7 +36,7 @@ export default function UpdateProfilePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (updating) return;
+    if (updating) return;    
     if (!user || !user._id) {
       showToast("Error", "User data is not available.", "error");
       return;

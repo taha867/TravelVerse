@@ -12,12 +12,14 @@ import UserPage from "./pages/UserPage";
 import PostPage from "./pages/PostPage";
 import UDashboardPage from "./Users/UDashboard";
 import TDashboardPage from "./TravelCompany/CDashboard";
-import ADashboardPage from "./Admin/ADashboard";
+import ADashboardPage from "./Admin/AdminDashboard/ADashboard";
 import Navbar from "./components/Navbar";
-import AdminApproval from "./Admin/AdminApprovalPage";
+import AdminApproval from "./Admin/AdminDashboard/AdminApprovalPage";
 import SetPasswordPage from "./Admin/SetPasswordPage";
 import BrowsePage from "./pages/BrowsePage";
 import UpdateProfile from "./TravelCompany/CDashboardComponents/UpdateProfilePage";
+import ContactPage from "./pages/Contact";
+import WebsiteStats from "./Admin/AdminDashboard/WebsiteStats";
 
 function App() {
   const user = useRecoilValue(userAtom);
@@ -34,6 +36,7 @@ function App() {
           path="/Uauth"
           element={!user ? <UAuthPage /> : <Navigate to="/" />}
         />
+        
         <Route
           path="/dashboard"
           element={
@@ -58,11 +61,15 @@ function App() {
         />
         <Route path="/admin-approval" 
         element={Admin ? <AdminApproval/> : <Navigate to="/Aauth" />} />
+        <Route path="/Websitestats" 
+        element={Admin ? <WebsiteStats/> : <Navigate to="/Aauth" />} />
         <Route path="/update-profile" 
         element={TCompany ? <UpdateProfile /> : <Navigate to="/Cauth" />} />
 
         
         <Route path="/setpassword/:companyId" element={<SetPasswordPage />} />
+        <Route path="/contact" element={<ContactPage/>} />        
+
         <Route
           path="/:username"
           element={user ? <UserPage /> : <Navigate to="/Uauth" />}

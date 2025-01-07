@@ -24,13 +24,10 @@ import { useSetRecoilState } from "recoil";
 import authScreenAtom from "../Uatoms/authAtom";
 import useShowToast from "../hooks/useShowToast";
 
-
-
 export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const setAuthScreen = useSetRecoilState(authScreenAtom);
   const [loading, setLoading] = useState(false);
- 
 
   const [inputs, setInputs] = useState({
     name: "",
@@ -64,7 +61,7 @@ export default function SignupForm() {
       setLoading(false);
     }
   };
-  
+
   return (
     <ChakraProvider theme={theme}>
       <Box
@@ -82,7 +79,7 @@ export default function SignupForm() {
           alignItems="center"
           justifyContent="center"
           backdropFilter="blur(10px)"
-          backgroundColor={useColorModeValue("white", "gray.dark")}
+          backgroundColor={useColorModeValue("white", "gray.800")}
           borderRadius="xl"
           boxShadow="xl"
           p={8}
@@ -90,7 +87,7 @@ export default function SignupForm() {
           width="90%"
         >
           <Icon as={FaPlane} w={10} h={10} color="brand.500" mb={4} />
-          <Heading mb={6} color="#004280">
+          <Heading mb={6} color={useColorModeValue("#004280", "blue.300")}>
             Create an Account
           </Heading>
           <Stack spacing={4} width="100%">
@@ -111,7 +108,10 @@ export default function SignupForm() {
                   type="text"
                   value={inputs.username}
                   onChange={(e) =>
-                    setInputs((inputs) => ({ ...inputs, username: e.target.value }))
+                    setInputs((inputs) => ({
+                      ...inputs,
+                      username: e.target.value,
+                    }))
                   }
                 />
               </FormControl>
@@ -133,7 +133,10 @@ export default function SignupForm() {
                   type={showPassword ? "text" : "password"}
                   value={inputs.password}
                   onChange={(e) =>
-                    setInputs((inputs) => ({ ...inputs, password: e.target.value }))
+                    setInputs((inputs) => ({
+                      ...inputs,
+                      password: e.target.value,
+                    }))
                   }
                 />
                 <InputRightElement h={"full"}>
@@ -171,4 +174,3 @@ export default function SignupForm() {
     </ChakraProvider>
   );
 }
-

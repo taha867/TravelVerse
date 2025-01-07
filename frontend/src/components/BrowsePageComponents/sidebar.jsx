@@ -10,7 +10,8 @@ import {
   Text,
   HStack,
   Stack,
-  Button
+  Button,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { Star } from 'lucide-react';
 import { useSearch } from '../BrowsePageComponents/SearchContext';
@@ -21,8 +22,14 @@ const tourTypes = ['Group', 'Private', 'Self-guided'];
 export default function Sidebar() {
   const { filters, updateFilters, resetFilters } = useSearch();
 
+  // Light and dark mode styles
+  const bgColor = useColorModeValue('white', 'gray.800');
+  const textColor = useColorModeValue('black', 'white');
+  const sliderTrackColor = useColorModeValue('gray.200', 'gray.600');
+  const sliderFilledTrackColor = useColorModeValue('blue.500', 'blue.300');
+
   return (
-    <Box bg="white" p={6} borderRadius="lg" shadow="lg">
+    <Box bg={bgColor} color={textColor} p={6} borderRadius="lg" shadow="lg">
       <VStack spacing={6} align="stretch">
         <Box>
           <Heading size="sm" mb={3}>Price Range</Heading>
@@ -32,8 +39,8 @@ export default function Sidebar() {
             min={0}
             max={10000}
           >
-            <RangeSliderTrack>
-              <RangeSliderFilledTrack />
+            <RangeSliderTrack bg={sliderTrackColor}>
+              <RangeSliderFilledTrack bg={sliderFilledTrackColor} />
             </RangeSliderTrack>
             <RangeSliderThumb index={0} />
             <RangeSliderThumb index={1} />
@@ -52,8 +59,8 @@ export default function Sidebar() {
             min={1}
             max={30}
           >
-            <RangeSliderTrack>
-              <RangeSliderFilledTrack />
+            <RangeSliderTrack bg={sliderTrackColor}>
+              <RangeSliderFilledTrack bg={sliderFilledTrackColor} />
             </RangeSliderTrack>
             <RangeSliderThumb index={0} />
             <RangeSliderThumb index={1} />
@@ -91,7 +98,7 @@ export default function Sidebar() {
               <Star
                 key={rating}
                 size={20}
-                fill={rating <= filters.rating ? 'currentColor' : 'none'}
+                fill={rating <= filters.rating ? textColor : 'none'}
                 onClick={() => updateFilters({ rating })}
                 style={{ cursor: 'pointer' }}
               />
@@ -120,7 +127,7 @@ export default function Sidebar() {
         </Box>
 
         <Button
-          colorScheme="gray"
+          colorScheme={useColorModeValue('blue', 'teal')}
           variant="outline"
           onClick={resetFilters}
         >

@@ -24,6 +24,13 @@ import {
   VStack,
   Stack,
   Center,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { useRecoilValue } from "recoil";
@@ -38,6 +45,11 @@ import Header from "./Header"; // Light/Dark mode toggle component
 function Navbar() {
   const [isSticky, setIsSticky] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isModalOpen,
+    onOpen: onModalOpen,
+    onClose: onModalClose,
+  } = useDisclosure();
   const user = useRecoilValue(userAtom); // Current user state from Recoil
   const TCompany = useRecoilValue(CompanyAtom); // Current company state from Recoil
   const admin = useRecoilValue(AdminAtom);
@@ -53,10 +65,10 @@ function Navbar() {
     };
   }, []);
 
-  const bgColor = useColorModeValue("white", "gray.800");
   const textColor = useColorModeValue("black", "white");
 
   const handleNavigate = (type, role) => {
+    onModalClose(); // Close the modal after navigating
     if (type === "register") {
       navigate(
         role === "user"
@@ -89,7 +101,7 @@ function Navbar() {
       right={0}
       left={0}
       zIndex={50}
-      bg={isSticky ? bgColor : "transparent"}
+      bg={isSticky ? "lightblue" : "transparent"}
       transition="all 0.3s ease-in-out"
     >
       <Flex
@@ -98,7 +110,7 @@ function Navbar() {
         justify="space-between"
         wrap="wrap"
         padding="1rem"
-        bg={isSticky ? bgColor : "transparent"}
+        bg={isSticky ? "lightblue" : "transparent"}
         color={textColor}
         backdropFilter="blur(10px)"
       >
@@ -119,30 +131,17 @@ function Navbar() {
 
         <Flex alignItems="center" ml={4}>
           <Stack direction="row" spacing={7}>
-            <Link as={RouterLink} to="/browse" color="blue.500" fontWeight="medium">
+            <Link as={RouterLink} to="/browse" color="white" fontWeight="medium">
               Browse
             </Link>
-            <Link as={RouterLink} to="/contact" color="blue.500" fontWeight="medium">
+            <Link as={RouterLink} to="/contact" color="white" fontWeight="medium">
               Contact
             </Link>
             <Header />
             {!user && !TCompany && !admin ? (
-              <Menu>
-                <MenuButton as={Button} colorScheme="blue">
-                  Register
-                </MenuButton>
-                <MenuList>
-                  <MenuItem onClick={() => handleNavigate("register", "user")}>
-                    Register as User
-                  </MenuItem>
-                  <MenuItem onClick={() => handleNavigate("register", "company")}>
-                    Register as Travel Company
-                  </MenuItem>
-                  <MenuItem onClick={() => handleNavigate("register", "admin")}>
-                    Register as Admin
-                  </MenuItem>
-                </MenuList>
-              </Menu>
+              <Button colorScheme="blue" onClick={onModalOpen}>
+                Register
+              </Button>
             ) : (
               <Menu>
                 <MenuButton
@@ -197,6 +196,67 @@ function Navbar() {
           />
         </Box>
       </Flex>
+
+      {/* Modal for Register Options */}
+<Modal isOpen={isModalOpen} onClose={onModalClose}>
+  <ModalOverlay />
+  <ModalContent
+    mt={20} // Move the modal slightly lower
+    bgImage="url('/travel-background.jpg')" // Replace with your travel-related image URL
+    bgSize="cover"
+    bgPosition="center"
+    color="white"
+    borderRadius="md"
+    boxShadow="lg"
+  >
+    <ModalHeader
+      textAlign="center"
+      fontSize="2xl"
+      fontWeight="bold"
+      color="white"
+      bg="rgba(0, 0, 0, 0.5)"
+      borderTopRadius="md"
+    >
+      Choose Your Role
+    </ModalHeader>
+    <ModalCloseButton color="white" />
+    <ModalBody bg="rgba(0, 0, 0, 0.6)" borderRadius="md">
+      <VStack spacing={4}>
+        <Button
+          colorScheme="blue"
+          variant="solid"
+          width="100%"
+          onClick={() => handleNavigate("register", "user")}
+        >
+          Register as User
+        </Button>
+        <Button
+          colorScheme="teal"
+          variant="solid"
+          width="100%"
+          onClick={() => handleNavigate("register", "company")}
+        >
+          Register as Travel Company
+        </Button>
+        <Button
+          colorScheme="purple"
+          variant="solid"
+          width="100%"
+          onClick={() => handleNavigate("register", "admin")}
+        >
+          Register as Admin
+        </Button>
+      </VStack>
+    </ModalBody>
+    <ModalFooter bg="rgba(0, 0, 0, 0.6)" borderBottomRadius="md">
+      <Button variant="ghost" onClick={onModalClose} color="white">
+        Close
+      </Button>
+    </ModalFooter>
+  </ModalContent>
+</Modal>
+
+
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>

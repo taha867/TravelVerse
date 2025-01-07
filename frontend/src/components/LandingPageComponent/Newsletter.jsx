@@ -1,4 +1,4 @@
-import { Box, Container, Heading, Text, Input, Button, VStack, useToast } from '@chakra-ui/react';
+import { Box, Container, Heading, Text, Input, Button, VStack, useToast, useColorModeValue } from '@chakra-ui/react';
 import { Send } from 'lucide-react';
 
 export default function Newsletter() {
@@ -14,11 +14,20 @@ export default function Newsletter() {
     });
   };
 
+  // Define light and dark mode values using useColorModeValue
+  const bgColor = useColorModeValue("teal.500", "teal.700");
+  const textColor = useColorModeValue("white", "gray.100");
+  const inputBgColor = useColorModeValue("white", "gray.800");
+  const inputTextColor = useColorModeValue("gray.900", "white");
+  const buttonBgColor = useColorModeValue("white", "gray.800");
+  const buttonColor = useColorModeValue("teal.500", "teal.200");
+  const buttonHoverBgColor = useColorModeValue("gray.100", "gray.600");
+
   return (
     <Box
       py={20}
-      bg="teal.500"
-      color="white"
+      bg={bgColor}  // Dynamic background color based on color mode
+      color={textColor}  // Dynamic text color based on color mode
       position="relative"
       overflow="hidden"
     >
@@ -43,8 +52,8 @@ export default function Newsletter() {
             <Input
               placeholder="Enter your email"
               size="lg"
-              bg="white"
-              color="gray.900"
+              bg={inputBgColor}  // Input background color changes based on color mode
+              color={inputTextColor}  // Input text color changes based on color mode
               _placeholder={{ color: 'gray.500' }}
               _hover={{ borderColor: 'white' }}
               _focus={{ borderColor: 'white' }}
@@ -53,10 +62,10 @@ export default function Newsletter() {
             <Button
               type="submit"
               size="lg"
-              bg="white"
-              color="teal.500"
+              bg={buttonBgColor}  // Button background color changes based on color mode
+              color={buttonColor}  // Button text color changes based on color mode
               rightIcon={<Send size={18} />}
-              _hover={{ bg: 'gray.100' }}
+              _hover={{ bg: buttonHoverBgColor }}  // Button hover color changes based on color mode
             >
               Subscribe
             </Button>

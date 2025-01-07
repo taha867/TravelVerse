@@ -1,42 +1,49 @@
-import { Box, Container, Heading, Text, Button, Stack } from '@chakra-ui/react';
+import { Box, Container, Heading, Text, Button, Stack, useColorModeValue } from '@chakra-ui/react';
 import { ArrowRight } from 'lucide-react';
 
 export default function Hero() {
+  // Define light and dark mode values
+  const bgColor = useColorModeValue("whiteAlpha.800", "gray.800");
+  const textColor = useColorModeValue("black", "white");
+  const headingTextColor = useColorModeValue("teal.500", "teal.300");
+  const buttonBgColor = useColorModeValue("teal.500", "teal.300");
+  const buttonHoverBgColor = useColorModeValue("teal.400", "teal.200");
+
   return (
     <Box
       h="90vh"
       position="relative"
       display="flex"
       alignItems="center"
+      justifyContent="center"
     >
-      <Box
-        position="absolute"
-        top={0}
-        left={0}
-        right={0}
-        bottom={0}
-        bgImage="url('https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?auto=format&fit=crop&q=80')"
-        bgSize="cover"
-        bgPosition="center"
-        _after={{
-          content: '""',
-          position: 'absolute',
+      {/* Video Background */}
+      <video
+        src="https://videos.pexels.com/video-files/5598970/5598970-uhd_3840_2160_24fps.mp4"
+        autoPlay
+        loop
+        muted
+        style={{
+          position: "absolute",
           top: 0,
           left: 0,
-          right: 0,
-          bottom: 0,
-          bg: 'blackAlpha.600',
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: -1,
         }}
       />
 
+      {/* Content Overlay */}
       <Container maxW="7xl" position="relative" zIndex={1}>
-        <Stack maxW="2xl" spacing={6} color="white">
+        <Stack maxW="2xl" spacing={6} color={textColor}>
           <Heading
             as="h1"
             size="3xl"
             fontWeight="bold"
             lineHeight="shorter"
             textShadow="2xl"
+            color={headingTextColor} // Heading color changes with color mode
           >
             Your Journey Begins with a Single Click
           </Heading>
@@ -48,16 +55,17 @@ export default function Hero() {
             <Button
               size="lg"
               colorScheme="teal"
-              rightIcon={<ArrowRight />}
-              _hover={{ transform: 'translateY(-2px)' }}
+              bg={buttonBgColor} // Button background changes with color mode
+              _hover={{ transform: 'translateY(-2px)', bg: buttonHoverBgColor }}
               transition="all 0.2s"
+              rightIcon={<ArrowRight />}
             >
               Start Your Adventure
             </Button>
             <Button
               size="lg"
               variant="outline"
-              color="white"
+              color={textColor}
               _hover={{ bg: 'whiteAlpha.200', transform: 'translateY(-2px)' }}
               transition="all 0.2s"
             >

@@ -14,7 +14,7 @@ import {
   Tr,
   useToast,
 } from "@chakra-ui/react";
-import theme from "../components/theme";
+import theme from "../../components/theme";
 
 const AdminApprovalPage = () => {
   const [loading, setLoading] = useState(true);

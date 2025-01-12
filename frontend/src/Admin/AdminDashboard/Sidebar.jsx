@@ -14,6 +14,13 @@ const Sidebar = ({ setActiveSection, activeSection }) => {
       p={4}
     >
       <VStack spacing={4} align="stretch">
+      <Button
+          variant={activeSection === "stats" ? "solid" : "ghost"}
+          colorScheme="teal"
+          onClick={() => setActiveSection("stats")}
+        >
+          Website Stats
+        </Button>
         <Button
           variant={activeSection === "approval" ? "solid" : "ghost"}
           colorScheme="teal"
@@ -21,14 +28,21 @@ const Sidebar = ({ setActiveSection, activeSection }) => {
         >
           Admin Approval
         </Button>
+        
         <Button
-          variant={activeSection === "stats" ? "solid" : "ghost"}
+          variant={activeSection === "manageuser" ? "solid" : "ghost"}
           colorScheme="teal"
-          onClick={() => setActiveSection("stats")}
+          onClick={() => setActiveSection("manageuser")}
         >
-          Website Stats
+          Manage Users
         </Button>
-       
+        <Button
+          variant={activeSection === "managecompanies" ? "solid" : "ghost"}
+          colorScheme="teal"
+          onClick={() => setActiveSection("managecompanies")}
+        >
+          Manage Companies
+        </Button>
       </VStack>
     </Box>
   );

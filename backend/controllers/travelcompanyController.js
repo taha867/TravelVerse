@@ -202,7 +202,7 @@ const updateTravelcompany = async (req, res) => {
         if (!user) return res.status(404).json({ error: 'Travel Company not found' });
 
         
-        if(req.params.id !== userId.toString()) return res.status(404).json({ error: "You can not update other users profile"});
+        if(req.params.id !== userId.toString()) return res.status(404).json({ error: "You can not update other Company profile"});
 
 
         if(password){

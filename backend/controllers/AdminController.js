@@ -73,6 +73,109 @@ const getAdminStats = async (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     }
   };
+  const deleteTravelCompany = async (req, res) => {
+    const { id } = req.params; // Get the company ID from the request parameters
   
+    try {
+      // Check if the company exists
+      const company = await Company.findById(id);
+  
+      if (!company) {
+        return res.status(404).json({ message: "Travel company not found." });
+      }
+  
+      // Delete the company
+      await Company.findByIdAndDelete(id);
+  
+      res.status(200).json({ message: "Travel company deleted successfully." });
+    } catch (error) {
+      console.error("Error deleting travel company:", error.message);
+      res.status(500).json({ error: "Internal server error." });
+    }
+  };
 
-export {loginAdmin,  LogoutAdmin , getAdminStats};
+  const getAllTravelCompanies = async (req, res) => {
+    const { page = 1, limit = 10 } = req.query; // Pagination: Default to page 1, 10 items per page
+  
+    try {
+      // Fetch companies with pagination
+      const companies = await Company.find()
+        .skip((page - 1) * limit)
+        .limit(parseInt(limit));
+  
+      // Total count of companies
+      const totalCompanies = await Company.countDocuments();
+  
+      res.status(200).json({
+        companies,
+        totalCompanies,
+        totalPages: Math.ceil(totalCompanies / limit),
+        currentPage: parseInt(page),
+      });
+    } catch (error) {
+      console.error("Error fetching travel companies:", error.message);
+      res.status(500).json({ error: "Internal server error." });
+    }
+  };
+  
+  const searchCompanies = async (req, res) => {
+    const { query } = req.query;
+  
+    try {
+      // Perform a case-insensitive search for the Companyname
+      const companies = await Company.find({
+        Companyname: { $regex: query, $options: "i" },
+      });
+  
+      res.status(200).json(companies);
+    } catch (error) {
+      console.error("Error searching for companies:", error.message);
+      res.status(500).json({ error: "Internal server error." });
+    }
+  };
+
+  // Get all users
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error.message);
+    res.status(500).json({ error: "Internal server error." });
+  }
+};
+
+// Search users by name or username
+const searchUsers = async (req, res) => {
+  const { query } = req.query;
+
+  try {
+    // Perform a case-insensitive search for name or username
+    const users = await User.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { username: { $regex: query, $options: "i" } },
+      ],
+    });
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error searching users:", error.message);
+    res.status(500).json({ error: "Internal server error." });
+  }
+};
+
+// Delete a user by ID
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await User.findByIdAndDelete(id);
+    res.status(200).json({ message: "User deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting user:", error.message);
+    res.status(500).json({ error: "Internal server error." });
+  }
+};
+  
+export {loginAdmin,  LogoutAdmin , getAdminStats, deleteTravelCompany,  getAllTravelCompanies, searchCompanies, getAllUsers, searchUsers, deleteUser };

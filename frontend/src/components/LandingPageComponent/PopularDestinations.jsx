@@ -1,28 +1,36 @@
-import { Box, Container, Heading, SimpleGrid, Image, Text, Badge, useColorModeValue } from '@chakra-ui/react';
+import {
+  Box,
+  Container,
+  Heading,
+  SimpleGrid,
+  Image,
+  Text,
+  Badge,
+  useColorModeValue,
+} from '@chakra-ui/react';
 
 const destinations = [
   {
-    title: 'Santorini, Greece',
-    image: 'https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?auto=format&fit=crop&q=80',
-    price: 'From $1,299',
+    title: 'Hunza',
+    image: '/Hunza.jpg', // Path relative to the public folder
+    price: 'From 20,000 Rs',
     tag: 'Most Popular',
   },
   {
-    title: 'Machu Picchu, Peru',
-    image: 'https://images.unsplash.com/photo-1587595431973-160d0d94add1?auto=format&fit=crop&q=80',
-    price: 'From $1,499',
+    title: 'Kalam',
+    image: '/Kalam.jpg', // Path relative to the public folder
+    price: 'From 15,000 Rs',
     tag: 'Adventure',
   },
   {
-    title: 'Bali, Indonesia',
-    image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=80',
-    price: 'From $899',
+    title: 'Swat',
+    image: '/Sawat.jpg', // Path relative to the public folder
+    price: 'From 30,000 Rs',
     tag: 'Best Value',
   },
 ];
 
 export default function PopularDestinations() {
-  // Define color values for light and dark modes using useColorModeValue
   const bgColor = useColorModeValue('gray.50', 'gray.800');
   const cardBgColor = useColorModeValue('white', 'gray.700');
   const shadow = useColorModeValue('lg', 'dark-lg');

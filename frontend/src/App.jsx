@@ -17,9 +17,12 @@ import Navbar from "./components/Navbar";
 import AdminApproval from "./Admin/AdminDashboard/AdminApprovalPage";
 import SetPasswordPage from "./Admin/SetPasswordPage";
 import BrowsePage from "./pages/BrowsePage";
-import UpdateProfile from "./TravelCompany/CDashboardComponents/UpdateProfilePage";
+import UpdateProfile from "./TravelCompany/CDashboardComponents.jsx/UpdateProfilePage";
 import ContactPage from "./pages/Contact";
 import WebsiteStats from "./Admin/AdminDashboard/WebsiteStats";
+import ManageUser from "./Admin/AdminDashboard/ManageUser";
+import Managecompany from "./Admin/AdminDashboard/ManageCompany";
+import UpdateUserProfilePage from "./Users/UDashboardComponents/UpdateUserProfilePage";
 
 function App() {
   const user = useRecoilValue(userAtom);
@@ -36,7 +39,6 @@ function App() {
           path="/Uauth"
           element={!user ? <UAuthPage /> : <Navigate to="/" />}
         />
-        
         <Route
           path="/dashboard"
           element={
@@ -59,17 +61,33 @@ function App() {
           path="/Aauth"
           element={!Admin ? <AAuthPage /> : <Navigate to="/" />}
         />
-        <Route path="/admin-approval" 
-        element={Admin ? <AdminApproval/> : <Navigate to="/Aauth" />} />
-        <Route path="/Websitestats" 
-        element={Admin ? <WebsiteStats/> : <Navigate to="/Aauth" />} />
-        <Route path="/update-profile" 
-        element={TCompany ? <UpdateProfile /> : <Navigate to="/Cauth" />} />
-
+        <Route
+          path="/admin-approval"
+          element={Admin ? <AdminApproval /> : <Navigate to="/Aauth" />}
+        />
+        <Route
+          path="/Websitestats"
+          element={Admin ? <WebsiteStats /> : <Navigate to="/Aauth" />}
+        />
+        <Route
+          path="/Manageuser"
+          element={Admin ? <ManageUser /> : <Navigate to="/Aauth" />}
+        />
+        <Route
+          path="/Managecompany"
+          element={Admin ? <Managecompany /> : <Navigate to="/Aauth" />}
+        />
+        <Route
+          path="/update-profile"
+          element={TCompany ? <UpdateProfile /> : <Navigate to="/Cauth" />}
+        />
         
+        <Route
+          path="/updateUSERprofile"
+          element={user ? <UpdateUserProfilePage />: <Navigate to="/Uauth" />}
+        />
         <Route path="/setpassword/:companyId" element={<SetPasswordPage />} />
-        <Route path="/contact" element={<ContactPage/>} />        
-
+        <Route path="/contact" element={<ContactPage />} />
         <Route
           path="/:username"
           element={user ? <UserPage /> : <Navigate to="/Uauth" />}

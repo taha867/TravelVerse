@@ -1,4 +1,5 @@
 import Tour from "../models/tourModel.js";
+import TravelCompany from '../models/travelcompanyModel.js';
 
 const GetTours = async (req, res) => {
   try {
@@ -92,4 +93,47 @@ const GetTours = async (req, res) => {
   }
 };
 
-export { GetTours };
+
+
+const createNewTour = async (req, res) => {
+  const { companyId } = req.user; // Assuming `verifyCompany` middleware sets `req.user`
+  const {
+    title,
+    location,
+    duration,
+    price,
+    category,
+    type,
+    image,
+  } = req.body;
+
+  try {
+    // Validate the company
+    const company = await TravelCompany.findById(companyId);
+    if (!company) {
+      return res.status(404).json({ message: 'Travel company not found.' });
+    }
+
+    // Create a new tour
+    const newTour = new Tour({
+      title,
+      location,
+      duration,
+      price,
+      category,
+      type,
+      image,
+    });
+
+    const savedTour = await newTour.save();
+
+    res.status(201).json({
+      message: 'Tour created successfully.',
+      tour: savedTour,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export { GetTours, createNewTour };

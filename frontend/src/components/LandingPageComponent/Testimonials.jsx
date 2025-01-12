@@ -3,22 +3,22 @@ import { Star } from 'lucide-react';
 
 const testimonials = [
   {
-    name: 'Sarah Johnson',
+    name: 'Ayesha',
     image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80',
     text: 'The best travel experience of my life! The attention to detail and personalized service was outstanding.',
-    location: 'New York, USA',
+    location: 'Lahore, Faisal Town',
   },
   {
-    name: 'Michael Chen',
+    name: 'Muhammad Taha',
     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80',
     text: 'Incredible destinations, amazing guides, and seamless organization. Highly recommended!',
-    location: 'Toronto, Canada',
+    location: 'Lahore, Johar Town',
   },
   {
-    name: 'Emma Watson',
+    name: 'Fatima',
     image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80',
     text: 'A perfect blend of adventure and comfort. Every trip with them has been exceptional.',
-    location: 'London, UK',
+    location: 'Lahore, Bahria',
   },
 ];
 

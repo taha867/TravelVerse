@@ -1,13 +1,20 @@
 import { Box, Container, Heading, Text, Button, Stack, useColorModeValue } from '@chakra-ui/react';
 import { ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
 export default function Hero() {
+  const navigate = useNavigate(); // Initialize the navigate function
+
   // Define light and dark mode values
-  const bgColor = useColorModeValue("whiteAlpha.800", "gray.800");
   const textColor = useColorModeValue("black", "white");
   const headingTextColor = useColorModeValue("teal.500", "teal.300");
   const buttonBgColor = useColorModeValue("teal.500", "teal.300");
   const buttonHoverBgColor = useColorModeValue("teal.400", "teal.200");
+
+  // Function to navigate to the browse page
+  const handleBrowseClick = () => {
+    navigate("/browse"); // Navigate to the browse page
+  };
 
   return (
     <Box
@@ -59,6 +66,7 @@ export default function Hero() {
               _hover={{ transform: 'translateY(-2px)', bg: buttonHoverBgColor }}
               transition="all 0.2s"
               rightIcon={<ArrowRight />}
+              onClick={handleBrowseClick}  // On button click, navigate to browse page
             >
               Start Your Adventure
             </Button>

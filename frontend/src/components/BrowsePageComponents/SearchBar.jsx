@@ -12,12 +12,12 @@ import {
 } from '@chakra-ui/react';
 import { Search, Users, Calendar } from 'lucide-react';
 import { useSearch } from './SearchContext';
-import { useDebounce } from '../../hooks/useDebounce';
+//import { useDebounce } from '../../hooks/useDebounce';
 
 export default function SearchBar() {
   const toast = useToast();
   const { filters, updateFilters } = useSearch();
-  const debouncedLocation = useDebounce(filters.location);
+  //const debouncedLocation = useDebounce(filters.location);
 
   // Dynamic styles for light and dark modes
   const bgColor = useColorModeValue('white', 'gray.800');

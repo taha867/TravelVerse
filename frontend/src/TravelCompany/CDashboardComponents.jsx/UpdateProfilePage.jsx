@@ -19,7 +19,6 @@ import useShowToast from "../../hooks/useShowToast";
 
 export default function UpdateProfilePage() {
   const [user, setUser] = useRecoilState(CompanyAtom);
-  console.log("Initialized user:", user);
   const [inputs, setInputs] = useState({
     company: user?.company || "",
     email: user?.email || "",

@@ -7,13 +7,13 @@ import {
   VStack,
   HStack,
   Stack,
-  useDisclosure,
+ // useDisclosure,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { MapPin, Clock, Star, Eye, BookOpen } from 'lucide-react';
 
 export default function TourCard({ tour }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+ // const { isOpen, onOpen, onClose } = useDisclosure();
 
   // Define color modes
   const cardBg = useColorModeValue('white', 'gray.800');

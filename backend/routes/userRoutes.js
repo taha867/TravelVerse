@@ -7,7 +7,7 @@ router.get("/profile/:username", getUserProfile);
 router.post("/signup",SignupUser);
 router.post("/login",loginUser);
 router.post("/logout",LogoutUser);
-router.post("/update/:id",protectRoute, updateUser);
+router.put("/update/:id",protectRoute, updateUser);
 
 
 export default router;

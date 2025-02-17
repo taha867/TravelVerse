@@ -26,8 +26,8 @@ const ProfilePage = () => {
   const { company, Companyname, email, instagramUrl, profilePic, status } =
     profileData;
 
-    const bgColor = useColorModeValue("gray.50", "gray.800");
-    const textColor = useColorModeValue("gray.900", "white");
+    const bgColor = useColorModeValue("white", "gray.800");
+    const textColor = useColorModeValue("black", "white");
     const buttonColorScheme = useColorModeValue("teal", "teal.300");
 
   return (

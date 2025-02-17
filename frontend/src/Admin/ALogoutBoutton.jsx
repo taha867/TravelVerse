@@ -16,6 +16,8 @@ const AdminLogoutButton = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure token is passed
+
         },
       });
 
@@ -25,11 +27,9 @@ const AdminLogoutButton = () => {
         showToast("Error", data.error, "error");
         return;
       }
-
-      // Clear admin data from local storage and navigate to login page
-      localStorage.removeItem("Admin-data");
+      localStorage.removeItem("admin-data");
       setAdmin(null); // Clear admin state
-      showToast("Success", data.message, "success");
+      showToast("Success", "Logout successfully");
       navigate("/"); 
     } catch (error) {
       showToast("Error", error.message || "Network error", "error");

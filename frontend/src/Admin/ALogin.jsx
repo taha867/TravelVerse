@@ -1,68 +1,72 @@
 import {
-    Box,
-    Button,
-    ChakraProvider,
-    Flex,
-    FormControl,
-    FormLabel,
-    Heading,
-    Input,
-    Stack,
-    useColorModeValue,
-    Icon,
-    InputGroup,
-    InputRightElement,
-  } from "@chakra-ui/react";
-  import { FaPlane } from "react-icons/fa";
-  import theme from "../components/theme";
-  import { useState } from "react";
-  import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-  import { useSetRecoilState } from "recoil";
-  import useShowToast from "../hooks/useShowToast";
-  import AdminAtom from "../AAtom/AuserAtom";
-  import { useNavigate } from "react-router-dom";
+  Box,
+  Button,
+  ChakraProvider,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  Stack,
+  useColorModeValue,
+  Icon,
+  InputGroup,
+  InputRightElement,
+} from "@chakra-ui/react";
+import { FaPlane } from "react-icons/fa";
+import theme from "../components/theme";
+import { useState } from "react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { useSetRecoilState } from "recoil";
+import useShowToast from "../hooks/useShowToast";
+import AdminAtom from "../AAtom/AuserAtom";
+import { useNavigate } from "react-router-dom";
 
 const AdminLogin = () => {
-    const [showPassword, setShowPassword] = useState(false);
-    const setadmin = useSetRecoilState(AdminAtom);
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const setadmin = useSetRecoilState(AdminAtom);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
+  const [inputs, setInputs] = useState({
+    username: "",
+    password: "",
+  });
 
-    const [inputs, setInputs] = useState({
-        username: "",
-        password: "",
+  const showToast = useShowToast();
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(inputs),
       });
 
-      const showToast = useShowToast();
-      const handleLogin = async () => {
-        setLoading(true);
-        try {
-          const res = await fetch("/api/admin/login", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(inputs),
-          });
-          const data = await res.json();
-          if (data.error) {
-            showToast("Error", data.error, "error");
-            return;
-          }
-          // Authenticate the user only after successful login
-          localStorage.setItem("admin-data", JSON.stringify(data));
-          setadmin(data); // Update authenticated user state
-          navigate("/"); // Redirect to home page
-        } catch (error) {
-          showToast("Error", error.message, "error");
-        } finally {
-          setLoading(false);
-        }
+      const data = await res.json();
+
+
+      // ✅ Ensure token exists before saving
+      if (!data.token) {
+        showToast("Error", "Login failed: No token received!", "error");
+        return;
+      }
+
+      // ✅ Store admin data and token inside the same object
+      const adminData = {
+        ...data.admin, // Admin info (username, role, etc.)
+        token: data.token, // Store token inside Admin-data
       };
 
-    
-
+      localStorage.setItem("Admin-data", JSON.stringify(adminData));
+        setadmin(adminData);
+        navigate("/");
+    } catch (error) {
+      showToast("Error", error.message, "error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <ChakraProvider theme={theme}>
@@ -148,7 +152,7 @@ const AdminLogin = () => {
         </Flex>
       </Box>
     </ChakraProvider>
-  )
+  );
 };
 
 export default AdminLogin;

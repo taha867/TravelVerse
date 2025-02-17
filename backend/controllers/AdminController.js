@@ -5,28 +5,35 @@ import Company from '../models/travelcompanyModel.js';
 
 
 const loginAdmin = async (req, res) => {
-    const { username, password } = req.body;
-  
-    try {
-      // Check if the username and password match the environment variables
+  const { username, password } = req.body;
+
+  try {
+      console.log("Received login request:", username, password); // Debugging log
+
       if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
-        
-        // Create JWT token (you can customize the payload as needed)
-        const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  
-        // Respond with a success message and token
-        res.status(200).json({
-          message: 'Login successful!',
-          token,
-        });
+          
+          // Generate JWT token
+          const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+          console.log("Generated token:", token); // Debugging log
+
+          // Ensure token is sent in response
+          res.status(200).json({
+              message: 'Login successful!',
+              token,
+              admin: { username, role: "admin" } 
+          });
+
       } else {
-        return res.status(400).json({ error: 'Invalid username or password' });
+          return res.status(400).json({ error: 'Invalid username or password' });
       }
-    } catch (error) {
-      console.error(error);
+  } catch (error) {
+      console.error("Error in loginAdmin:", error); // Debugging log
       res.status(500).json({ error: 'Internal server error' });
-    }
-  };
+  }
+};
+
+
 
 const LogoutAdmin = async (req, res) => {
     try {

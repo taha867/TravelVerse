@@ -24,11 +24,11 @@ const testimonials = [
 
 export default function Testimonials() {
   // Define color values for light and dark modes using useColorModeValue
-  const bgColor = useColorModeValue('white', 'gray.700');
+  const bgColor = useColorModeValue('gray.50', 'gray.900');
   const cardBgColor = useColorModeValue('white', 'gray.800');
   const shadow = useColorModeValue('lg', 'dark-lg');
   const textColor = useColorModeValue('gray.600', 'gray.300');
-  const iconColor = useColorModeValue('yellow.400', 'yellow.500');
+  const iconColor = useColorModeValue('blue.400', 'blue.500');
   const avatarBg = useColorModeValue('gray.100', 'gray.600');
   const locationColor = useColorModeValue('gray.500', 'gray.400');
 

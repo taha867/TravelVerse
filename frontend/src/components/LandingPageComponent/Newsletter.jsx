@@ -15,12 +15,12 @@ export default function Newsletter() {
   };
 
   // Define light and dark mode values using useColorModeValue
-  const bgColor = useColorModeValue("teal.500", "teal.700");
+  const bgColor = useColorModeValue("blue.500", "blue.700");
   const textColor = useColorModeValue("white", "gray.100");
   const inputBgColor = useColorModeValue("white", "gray.800");
   const inputTextColor = useColorModeValue("gray.900", "white");
   const buttonBgColor = useColorModeValue("white", "gray.800");
-  const buttonColor = useColorModeValue("teal.500", "teal.200");
+  const buttonColor = useColorModeValue("blue.500", "blue.200");
   const buttonHoverBgColor = useColorModeValue("gray.100", "gray.600");
 
   return (

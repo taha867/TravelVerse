@@ -74,12 +74,12 @@ function Navbar() {
   // Get avatar URL dynamically
   const getAvatarUrl = () => {
     if (user) {
-      return user.profilePic || "https://placekitten.com/150/150"; // Fallback to Placekitten
+      return user.profilePic || "https://via.placeholder.com/150"; // Default placeholder for user
     }
     if (TCompany) {
-      return TCompany.profilePic || "https://placekitten.com/150/150"; // Fallback to Placekitten
+      return TCompany.profilePic || "https://via.placeholder.com/150"; // Default placeholder for company
     }
-    return "https://placekitten.com/150/150"; // Default avatar
+    return "https://via.placeholder.com/150"; // Default avatar for non-logged-in state
   };
 
   return (
@@ -119,75 +119,62 @@ function Navbar() {
         </Flex>
 
         <Flex alignItems="center" ml={4}>
-          <Stack direction="row" spacing={7} display={{ base: "none", md: "flex" }}>
-            <Link
-              as={RouterLink}
-              to="/browse"
-              color="white"
-              fontWeight="medium"
-            >
+          <Stack direction="row" spacing={7}>
+            <Link as={RouterLink} to="/browse" color="white" fontWeight="medium">
               Browse
             </Link>
-            <Link
-              as={RouterLink}
-              to="/contact"
-              color="white"
-              fontWeight="medium"
-            >
+            <Link as={RouterLink} to="/contact" color="white" fontWeight="medium">
               Contact
             </Link>
             <Header />
-            {/* Register Button */}
-            <Button colorScheme="blue" onClick={onModalOpen}>
-              Register
-            </Button>
+            {!user && !TCompany && !admin ? (
+              <Button colorScheme="blue" onClick={onModalOpen}>
+                Register
+              </Button>
+            ) : (
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  rounded="full"
+                  variant="link"
+                  cursor="pointer"
+                  minW={0}
+                >
+                  <Avatar size="sm" src={getAvatarUrl()} />
+                </MenuButton>
+                <MenuList alignItems="center">
+                  <br />
+                  <Center>
+                    <Avatar size="2xl" src={getAvatarUrl()} />
+                  </Center>
+                  <br />
+                  <Center>
+                    <Text>
+                      {user
+                        ? `Welcome, ${user.username}`
+                        : TCompany
+                        ? `Welcome, ${TCompany.companyName}`
+                        : `Welcome, Admin`}
+                    </Text>
+                  </Center>
+                  <br />
+                  <MenuDivider />
+                  <MenuItem as={RouterLink} to="/dashboard">
+                    Dashboard
+                  </MenuItem>
+                  <MenuItem>
+                    {user ? (
+                      <ULogoutButton />
+                    ) : TCompany ? (
+                      <CLogOutButton />
+                    ) : admin ? (
+                      <AdminLogOutButton />
+                    ) : null}
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            )}
           </Stack>
-          {/* Menu for logged in users */}
-          {!user && !TCompany && !admin ? (
-            ""
-          ) : (
-            <Menu display={{ base: "none", md: "flex" }}>
-              <MenuButton
-                as={Button}
-                rounded="full"
-                variant="link"
-                cursor="pointer"
-                minW={0}
-              >
-                <Avatar size="sm" src={getAvatarUrl()} />
-              </MenuButton>
-              <MenuList alignItems="center">
-                <br />
-                <Center>
-                  <Avatar size="2xl" src={getAvatarUrl()} />
-                </Center>
-                <br />
-                <Center>
-                  <Text>
-                    {user
-                      ? `Welcome, ${user.username}`
-                      : TCompany
-                      ? `Welcome, ${TCompany.companyName}`
-                      : `Welcome, Admin`}
-                  </Text>
-                </Center>
-                <br />
-                <MenuDivider />
-                <MenuItem as={RouterLink} to="/dashboard">
-                  Dashboard
-                </MenuItem>
-                <MenuItem>
-                  {user ? (
-                    <ULogoutButton />
-                  ) : TCompany ? (
-                    <CLogOutButton />
-                  ) : admin ? (
-                    <AdminLogOutButton />
-                  ) : null}
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          )}
         </Flex>
         <Box display={{ base: "block", md: "none" }}>
           <IconButton
@@ -258,7 +245,6 @@ function Navbar() {
         </ModalContent>
       </Modal>
 
-      {/* Drawer for small screens */}
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
@@ -266,66 +252,41 @@ function Navbar() {
           <DrawerHeader>Menu</DrawerHeader>
           <DrawerBody>
             <VStack spacing={4}>
-              <Link
-                as={RouterLink}
-                to="/"
-                fontWeight="medium"
-                color={textColor}
-              >
+              <Link as={RouterLink} to="/" fontWeight="medium" color={textColor}>
                 Home
               </Link>
-              <Link
-                as={RouterLink}
-                to="/browse"
-                fontWeight="medium"
-                color={textColor}
-              >
+              <Link as={RouterLink} to="/browse" fontWeight="medium" color={textColor}>
                 Browse
               </Link>
-              <Link
-                as={RouterLink}
-                to="/contact"
-                fontWeight="medium"
-                color={textColor}
-              >
+              <Link as={RouterLink} to="/contact" fontWeight="medium" color={textColor}>
                 Contact
               </Link>
               {!user && !TCompany && !admin ? (
                 <>
-                  <Menu>
-                    <MenuItem
-                      onClick={() => handleNavigate("register", "user")}
-                    >
-                      Register as User
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleNavigate("register", "company")}
-                    >
-                      Register as Travel Company
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleNavigate("register", "admin")}
-                    >
-                      Register as Admin
-                    </MenuItem>
-                  </Menu>
+                  <MenuItem onClick={() => handleNavigate("register", "user")}>
+                    Register as User
+                  </MenuItem>
+                  <MenuItem onClick={() => handleNavigate("register", "company")}>
+                    Register as Travel Company
+                  </MenuItem>
+                  <MenuItem onClick={() => handleNavigate("register", "admin")}>
+                    Register as Admin
+                  </MenuItem>
                 </>
               ) : (
                 <>
-                  <Menu>
-                    <MenuItem as={RouterLink} to="/dashboard">
-                      Dashboard
-                    </MenuItem>
-                    <MenuItem>
-                      {user ? (
-                        <ULogoutButton />
-                      ) : TCompany ? (
-                        <CLogOutButton />
-                      ) : admin ? (
-                        <AdminLogOutButton />
-                      ) : null}
-                    </MenuItem>
-                  </Menu>
+                  <MenuItem as={RouterLink} to="/dashboard">
+                    Dashboard
+                  </MenuItem>
+                  <MenuItem>
+                    {user ? (
+                      <ULogoutButton />
+                    ) : TCompany ? (
+                      <CLogOutButton />
+                    ) : admin ? (
+                      <AdminLogOutButton />
+                    ) : null}
+                  </MenuItem>
                 </>
               )}
             </VStack>

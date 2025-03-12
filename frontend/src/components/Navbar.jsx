@@ -30,6 +30,7 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
+  Container,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { useRecoilValue } from "recoil";
@@ -89,59 +90,96 @@ function Navbar() {
       top={0}
       right={0}
       left={0}
-      zIndex={50}
-      bg={"teal.500"}
+      height="72px" // Explicit height for the navbar
+      zIndex={1000} // Higher z-index to ensure it stays on top
+      bg={useColorModeValue("rgba(255,255,255,0.95)", "rgba(26,32,44,0.95)")}
+      backdropFilter="blur(10px)"
       transition="all 0.3s ease-in-out"
+      borderBottom="1px solid"
+      borderColor={useColorModeValue("gray.100", "gray.700")}
     >
-      <Flex
-        as="nav"
-        align="center"
-        justify="space-between"
-        wrap="wrap"
-        padding="1rem"
-        bg={"teal.500"}
-        color={textColor}
-        backdropFilter="blur(10px)"
+      <Container 
+        maxW="8xl" 
+        h="full" // Make container take full height
       >
-        <Flex align="center" mr={5}>
-          <Link as={RouterLink} to="/" _hover={{ textDecoration: "none" }}>
-            <Flex align="center">
-              <img
-                src="/TravelVerseLogo.png"
-                alt="Travel Verse"
-                style={{ height: "40px", width: "auto" }}
-              />
-              <Text fontSize="2xl" fontWeight="bold" ml={2} color="white">
-                TravelVerse
-              </Text>
-            </Flex>
+        <Flex
+          as="nav"
+          align="center"
+          justify="space-between"
+          h="full" // Make flex take full height
+        >
+          {/* Logo */}
+          <Link
+            as={RouterLink}
+            to="/"
+            _hover={{ textDecoration: "none" }}
+            display="flex"
+            alignItems="center"
+            gap={3}
+          >
+            <img
+              src="/TravelVerseLogo.png"
+              alt="TravelVerse"
+              style={{ height: "32px", width: "auto" }}
+            />
+            <Text
+              fontSize="xl"
+              fontWeight="700"
+              bgGradient="linear(to-r, blue.500, blue.300)"
+              bgClip="text"
+            >
+              TravelVerse
+            </Text>
           </Link>
-        </Flex>
 
-        <Flex alignItems="center" ml={4}>
-          <Stack direction="row" spacing={7} display={{ base: "none", md: "flex" }}>
+          {/* Desktop Navigation */}
+          <Flex gap={8} align="center" display={{ base: "none", md: "flex" }}>
+           
             <Link
               as={RouterLink}
               to="/browse"
-              color="white"
-              fontWeight="medium"
+              color={useColorModeValue("gray.700", "gray.200")}
+              fontWeight="500"
+              fontSize="sm"
+              _hover={{
+                color: "blue.500",
+                transform: "translateY(-1px)",
+              }}
+              transition="all 0.2s"
             >
-              Browse
+              Destinations
             </Link>
             <Link
               as={RouterLink}
               to="/contact"
-              color="white"
-              fontWeight="medium"
+              color={useColorModeValue("gray.700", "gray.200")}
+              fontWeight="500"
+              fontSize="sm"
+              _hover={{
+                color: "blue.500",
+                transform: "translateY(-1px)",
+              }}
+              transition="all 0.2s"
             >
-              Contact
+              About
             </Link>
             <Header />
-            {/* Register Button */}
-            <Button colorScheme="blue" onClick={onModalOpen}>
+            <Button
+              colorScheme="blue"
+              size="sm"
+              px={6}
+              fontWeight="500"
+              fontSize="sm"
+              _hover={{
+                transform: "translateY(-1px)",
+                shadow: "md",
+              }}
+              onClick={onModalOpen}
+            >
               Register
             </Button>
-          </Stack>
+          </Flex>
+
           {/* Menu for logged in users */}
           {!user && !TCompany && !admin ? (
             ""
@@ -188,16 +226,17 @@ function Navbar() {
               </MenuList>
             </Menu>
           )}
+
+          <Box display={{ base: "block", md: "none" }}>
+            <IconButton
+              onClick={onOpen}
+              icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+              variant="outline"
+              aria-label="Open Menu"
+            />
+          </Box>
         </Flex>
-        <Box display={{ base: "block", md: "none" }}>
-          <IconButton
-            onClick={onOpen}
-            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-            variant="outline"
-            aria-label="Open Menu"
-          />
-        </Box>
-      </Flex>
+      </Container>
 
       {/* Modal for Register Options */}
       <Modal isOpen={isModalOpen} onClose={onModalClose} size="lg">

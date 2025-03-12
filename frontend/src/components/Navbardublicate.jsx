@@ -24,6 +24,7 @@ import {
   useColorModeValue,
   VStack,
   Stack,
+  Container,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { useRecoilValue } from 'recoil';
@@ -39,7 +40,7 @@ function Navbar() {
   // Add sticky header behavior
   useEffect(() => {
     const handleScroll = () => {
-      setIsSticky(window.scrollY > 100);
+      setIsSticky(window.scrollY > 0);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -50,51 +51,94 @@ function Navbar() {
 
   // Define styles
   const bgColor = useColorModeValue('white', 'gray.800');
-  const textColor = useColorModeValue('black', 'white');
+  const textColor = useColorModeValue('gray.800', 'white');
 
   return (
     <Box
-      as="header"
+      as="nav"
       position="fixed"
-      top={0}
-      right={0}
-      left={0}
-      zIndex={50}
-      bg={isSticky ? bgColor : 'transparent'}
+      w="full"
+      zIndex={100}
       transition="all 0.3s ease-in-out"
+      bg={isSticky ? bgColor : 'transparent'}
+      boxShadow={isSticky ? 'sm' : 'none'}
+      backdropFilter={isSticky ? 'blur(8px)' : 'none'}
     >
-      <Flex
-        as="nav"
-        align="center"
-        justify="space-between"
-        wrap="wrap"
-        padding="1rem"
-        bg={isSticky ? bgColor : 'transparent'}
-        color={textColor}
-        backdropFilter="blur(10px)"
-      >
-        {/* Logo */}
-        <Flex align="center" mr={5}>
-          <Link as={RouterLink} to="/" _hover={{ textDecoration: 'none' }}>
-            <Flex align="center">
-              <img
-                src="/TravelVerseLogo.png" // Path to the image in your public folder
-                alt="Travel Verse"
-                style={{ height: '40px', width: 'auto' }} // Adjust the size here
-              />
-              <Text fontSize="2xl" fontWeight="bold" ml={2} color="blue.700">
-                TravelVerse
-              </Text>
-            </Flex>
+      <Container maxW="8xl">
+        <Flex
+          align="center"
+          justify="space-between"
+          h="4.5rem"
+          transition="all 0.3s ease-in-out"
+        >
+          {/* Logo */}
+          <Link
+            as={RouterLink}
+            to="/"
+            _hover={{ textDecoration: 'none' }}
+            display="flex"
+            alignItems="center"
+            gap={2}
+          >
+            <img
+              src="/TravelVerseLogo.png"
+              alt="TravelVerse"
+              style={{ height: '35px', width: 'auto' }}
+            />
+            <Text
+              fontSize="xl"
+              fontWeight="bold"
+              bgGradient="linear(to-r, teal.500, teal.300)"
+              bgClip="text"
+              display={{ base: 'none', md: 'block' }}
+            >
+              TravelVerse
+            </Text>
           </Link>
-        </Flex>
 
-        {/* Right-side section with profile, logo, and dark/light toggle */}
-        <Flex alignItems="center" ml={4}>
-          <Stack direction="row" spacing={7}>
-            <Header /> {/* Add the Header component here for dark/light mode toggle */}
+          {/* Desktop Navigation */}
+          <Flex
+            gap={8}
+            align="center"
+            display={{ base: 'none', md: 'flex' }}
+          >
+            <Link
+              as={RouterLink}
+              to="/browse"
+              color={isSticky ? textColor : 'white'}
+              fontWeight="500"
+              _hover={{ color: 'teal.400' }}
+              transition="all 0.2s"
+            >
+              Explore
+            </Link>
+            <Link
+              as={RouterLink}
+              to="/destinations"
+              color={isSticky ? textColor : 'white'}
+              fontWeight="500"
+              _hover={{ color: 'teal.400' }}
+              transition="all 0.2s"
+            >
+              Destinations
+            </Link>
+            <Link
+              as={RouterLink}
+              to="/about"
+              color={isSticky ? textColor : 'white'}
+              fontWeight="500"
+              _hover={{ color: 'teal.400' }}
+              transition="all 0.2s"
+            >
+              About
+            </Link>
+          </Flex>
 
-            {/* Profile Avatar */}
+          {/* Right Section */}
+          <Flex align="center" gap={4}>
+            <Header />
+            
+            {/* Profile Menu */}
             <Menu>
               <MenuButton
                 as={Button}
@@ -105,80 +149,75 @@ function Navbar() {
               >
                 <Avatar
                   size="sm"
-                  src="https://avatars.dicebear.com/api/male/username.svg"
+                  src={user?.profilePic || "https://bit.ly/broken-link"}
+                  bg="teal.500"
                 />
               </MenuButton>
-              <MenuList alignItems="center">
-                <br />
-                <Center>
-                  <Avatar
-                    size="2xl"
-                    src="https://avatars.dicebear.com/api/male/username.svg"
-                  />
+              <MenuList>
+                <Center p={4}>
+                  <VStack>
+                    <Avatar
+                      size="xl"
+                      src={user?.profilePic || "https://bit.ly/broken-link"}
+                      bg="teal.500"
+                    />
+                    <Text fontWeight="500">
+                      {user ? user.username : 'Guest'}
+                    </Text>
+                  </VStack>
                 </Center>
-                <br />
-                <Center>
-                  <p>
-                    {user
-                      ? `Welcome, ${user.username}`
-                      : 'Guest'}
-                  </p>
-                </Center>
-                <br />
                 <MenuDivider />
-
-                {/* Conditional rendering based on user state */}
                 {user ? (
-                  <MenuItem>
-                    <LogoutButton /> {/* Show LogoutButton if the user is logged in */}
-                  </MenuItem>
+                  <>
+                    <MenuItem as={RouterLink} to="/profile">
+                      Profile
+                    </MenuItem>
+                    <MenuItem as={RouterLink} to="/settings">
+                      Settings
+                    </MenuItem>
+                    <MenuDivider />
+                    <MenuItem>
+                      <LogoutButton />
+                    </MenuItem>
+                  </>
                 ) : (
-                  <Link as={RouterLink} to="/auth">
-                    <MenuItem>Login</MenuItem>
-                  </Link>
+                  <MenuItem as={RouterLink} to="/auth">
+                    Login
+                  </MenuItem>
                 )}
               </MenuList>
             </Menu>
-          </Stack>
+
+            {/* Mobile menu button */}
+            <IconButton
+              display={{ base: 'flex', md: 'none' }}
+              onClick={onOpen}
+              variant="ghost"
+              color={isSticky ? textColor : 'white'}
+              icon={<HamburgerIcon />}
+              aria-label="Open Menu"
+            />
+          </Flex>
         </Flex>
+      </Container>
 
-        {/* Hamburger menu for smaller screens */}
-        <Box display={{ base: 'block', md: 'none' }}>
-          <IconButton
-            onClick={onOpen}
-            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-            variant="outline"
-            aria-label="Open Menu"
-          />
-        </Box>
-      </Flex>
-
-      {/* Drawer for smaller screens */}
+      {/* Mobile Drawer */}
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Menu</DrawerHeader>
+          <DrawerHeader borderBottomWidth="1px">Menu</DrawerHeader>
           <DrawerBody>
-            <VStack spacing={4}>
-              <Link
-                as={RouterLink}
-                to="/"
-                fontWeight="medium"
-                color={textColor}
-                _hover={{ color: 'blue.700' }}
-              >
-                Home
+            <VStack spacing={4} align="stretch" pt={4}>
+              <Link as={RouterLink} to="/browse" onClick={onClose}>
+                Explore
               </Link>
-              {user ? (
-                <MenuItem>
-                  <LogoutButton /> {/* Show LogoutButton in Drawer if logged in */}
-                </MenuItem>
-              ) : (
-                <Link as={RouterLink} to="/auth">
-                  <MenuItem>Login</MenuItem>
-                </Link>
-              )}
+              <Link as={RouterLink} to="/destinations" onClick={onClose}>
+                Destinations
+              </Link>
+              <Link as={RouterLink} to="/about" onClick={onClose}>
+                About
+              </Link>
             </VStack>
           </DrawerBody>
         </DrawerContent>
